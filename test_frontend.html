@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SteamLens Summary</title>
+</head>
+<body>
+  <h1>AI Summary</h1>
+  <p id="summary">Loading summary...</p>
+
+  <h2>Genre Prices</h2>
+  <ul id="genreList"></ul>
+
+  <script>
+    fetch('http://127.0.0.1:5000/genres-summary')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error("API call failed");
+        }
+        return response.json();
+      })
+      .then(data => {
+        // Show AI Summary
+        document.getElementById("summary").textContent = data.ai_summary;
+
+        // Show each genre and price
+        const list = document.getElementById("genreList");
+        data.data.forEach(item => {
+          const li = document.createElement("li");
+          li.textContent = `${item._id}: $${item.average_price.toFixed(2)}`;
+          list.appendChild(li);
+        });
+      })
+      .catch(error => {
+        document.getElementById("summary").textContent = "Error fetching data.";
+        console.error("Error:", error);
+      });
+  </script>
+</body>
+</html>
